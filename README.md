@@ -44,17 +44,17 @@
 
 ### 偏微分方程
 
-二维泊松方程：
+- 二维泊松方程：
 
 ![泊松方程](https://latex.codecogs.com/svg.latex?%5Cnabla%5E2%20u%20%3D%202x%20&plus;%202y%20%5Cquad%20%5Ctext%7Bin%7D%20%5B0,1%5D%5E2)
 
-精确解：
+- 精确解：
   
 ![精确解](https://latex.codecogs.com/svg.latex?u(x,y)%20%3D%20%5Cfrac%7B1%7D%7B3%7D(x%5E3%20&plus;%20y%5E3))
 
 ### 边界条件
 
-Dirichlet边界条件：
+- Dirichlet边界条件：
   
 ![边界条件](https://latex.codecogs.com/svg.latex?u%7C_%7B%5Cpartial%5COmega%7D%20%3D%20%5Cfrac%7B1%7D%7B3%7D(x%5E3%20&plus;%20y%5E3))
 
@@ -66,6 +66,6 @@ Dirichlet边界条件：
 2. **边界残差**  
    ![BC损失](https://latex.codecogs.com/svg.latex?%5Cmathcal%7BL%7D_%7Bbc%7D%20%3D%20%5Cmathbb%7BE%7D%5Cleft%5B%20(u%20-%20%5Cfrac%7B1%7D%7B3%7D(x%5E3%20&plus;%20y%5E3))%5E2%20%5Cright%5D)
 
-总损失：
+- 总损失：
 
 ![总损失](https://latex.codecogs.com/svg.latex?%5Cmathcal%7BL%7D%20%3D%20%5Cmathcal%7BL%7D_%7Bpde%7D%20&plus;%202%5Cmathcal%7BL%7D_%7Bbc%7D)
