@@ -1,6 +1,6 @@
 # 涉及的偏微分方程
 
-## 1、纳斯-斯托克斯方程部分
+## 1、纳斯-斯托克斯方程
 
 ### 涉及的偏微分方程
 
@@ -40,70 +40,32 @@
 
 ![公式](https://latex.codecogs.com/svg.latex?%5Cmathcal%7BL%7D%20%3D%20%5Cmathcal%7BL%7D_%7B%5Ctext%7Bdata%7D%7D%20&plus;%20%5Cmathcal%7BL%7D_%7B%5Ctext%7Bpde%7D%7D)
 
-## 涉及的偏微分方程和边界条件
+## 2、泊松方程
 
-### 涉及的偏微分方程
+### 偏微分方程
 
-#### 泊松方程
+二维泊松方程：
 
-- **泊松方程**：
+![泊松方程](https://latex.codecogs.com/svg.latex?%5Cnabla%5E2%20u%20%3D%202x%20&plus;%202y%20%5Cquad%20%5Ctext%7Bin%7D%20%5B0,1%5D%5E2)
+
+精确解：
   
-  ```math
-  \nabla^2 u = f(x, y)
-  ```
+![精确解](https://latex.codecogs.com/svg.latex?u(x,y)%20%3D%20%5Cfrac%7B1%7D%7B3%7D(x%5E3%20&plus;%20y%5E3))
 
-  其中：
+### 边界条件
+
+Dirichlet边界条件：
   
-  - `\nabla^2 u` 是 Laplace 算子作用于 `u`，在二维情况下表示为：
-    
-    ```math
-    \nabla^2 u = \frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2}
-    ```
-  - `f(x, y)` 是源项函数，在代码中定义为 `f(x, y) = 2x + 2y`
+![边界条件](https://latex.codecogs.com/svg.latex?u%7C_%7B%5Cpartial%5COmega%7D%20%3D%20%5Cfrac%7B1%7D%7B3%7D(x%5E3%20&plus;%20y%5E3))
 
-### 设置的边界条件
+### 损失函数
 
-- **Dirichlet 边界条件**：
-  
-  ```math
-  u(x, y) = \frac{x^3 + y^3}{3} \quad \text{当} \ (x, y) \ \text{位于边界上时}
-  ```
+1. **PDE残差**  
+   ![PDE损失](https://latex.codecogs.com/svg.latex?%5Cmathcal%7BL%7D_%7Bpde%7D%20%3D%20%5Cmathbb%7BE%7D%5Cleft%5B%20(u_%7Bxx%7D%20&plus;%20u_%7Byy%7D%20-%202x%20-%202y)%5E2%20%5Cright%5D)
 
-### 各个损失的具体表达式
+2. **边界残差**  
+   ![BC损失](https://latex.codecogs.com/svg.latex?%5Cmathcal%7BL%7D_%7Bbc%7D%20%3D%20%5Cmathbb%7BE%7D%5Cleft%5B%20(u%20-%20%5Cfrac%7B1%7D%7B3%7D(x%5E3%20&plus;%20y%5E3))%5E2%20%5Cright%5D)
 
-#### PDE 残差损失
+总损失：
 
-- **PDE 残差损失**：
-  
-  ```math
-  \mathcal{L}_{\text{pde}} = \sum_{i} \left( \nabla^2 u_{net} - f(x_i, y_i) \right)^2
-  ```
-
-  其中：
-  
-  - `u_{net}` 是神经网络预测的解
-  - `\nabla^2 u_{net}` 是通过自动微分计算得到的 Laplace 算子作用于 `u_{net}` 的结果
-  - `f(x_i, y_i)` 是源项函数在点 `(x_i, y_i)` 处的值
-
-#### 边界条件损失
-
-- **边界条件损失**：
-  
-  ```math
-  \mathcal{L}_{\text{bc}} = \sum_{i} \left( u_{net}(x_i, y_i) - \frac{x_i^3 + y_i^3}{3} \right)^2
-  ```
-
-  其中：
-  
-  - `u_{net}(x_i, y_i)` 是神经网络预测的解在边界点 `(x_i, y_i)` 处的值
-  - `\frac{x_i^3 + y_i^3}{3}` 是边界条件中给定的精确解
-
-### 总的损失函数
-
-代码中的总损失函数是 PDE 残差损失和边界条件损失的加权和：
-
-```math
-\mathcal{L} = \mathcal{L}_{\text{pde}} + \lambda \cdot \mathcal{L}_{\text{bc}}
-```
-
-在代码中，通过 `loss_weights` 参数设置了权重系数，`loss_weights=[1, 2]` 表示 PDE 残差损失的权重为 1，边界条件损失的权重为 2。
+![总损失](https://latex.codecogs.com/svg.latex?%5Cmathcal%7BL%7D%20%3D%20%5Cmathcal%7BL%7D_%7Bpde%7D%20&plus;%202%5Cmathcal%7BL%7D_%7Bbc%7D)
