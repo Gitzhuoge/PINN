@@ -1,6 +1,6 @@
-# PINN
-偏微分方程
-## 涉及的偏微分方程和边界条件
+# 涉及的偏微分方程
+
+## 纳斯-斯托克斯方程
 
 ### 涉及的偏微分方程
 
@@ -8,50 +8,34 @@
 
 - **x 方向动量方程**：
   
-  $$
-  \frac{\partial u}{\partial t} + \lambda_1 \left( u \frac{\partial u}{\partial x} + v \frac{\partial u}{\partial y} \right) + \frac{\partial p}{\partial x} - \lambda_2 \left( \frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} \right) = 0
-  $$
+  ![公式](https://latex.codecogs.com/svg.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20&plus;%20%5Clambda_1%20%5Cleft(%20u%20%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20x%7D%20&plus;%20v%20%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20y%7D%20%5Cright)%20&plus;%20%5Cfrac%7B%5Cpartial%20p%7D%7B%5Cpartial%20x%7D%20-%20%5Clambda_2%20%5Cleft(%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D%20&plus;%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20y%5E2%7D%20%5Cright)%20%3D%200)
 
 - **y 方向动量方程**：
   
-  $$
-  \frac{\partial v}{\partial t} + \lambda_1 \left( u \frac{\partial v}{\partial x} + v \frac{\partial v}{\partial y} \right) + \frac{\partial p}{\partial y} - \lambda_2 \left( \frac{\partial^2 v}{\partial x^2} + \frac{\partial^2 v}{\partial y^2} \right) = 0
-  $$
+  ![公式](https://latex.codecogs.com/svg.latex?%5Cfrac%7B%5Cpartial%20v%7D%7B%5Cpartial%20t%7D%20&plus;%20%5Clambda_1%20%5Cleft(%20u%20%5Cfrac%7B%5Cpartial%20v%7D%7B%5Cpartial%20x%7D%20&plus;%20v%20%5Cfrac%7B%5Cpartial%20v%7D%7B%5Cpartial%20y%7D%20%5Cright)%20&plus;%20%5Cfrac%7B%5Cpartial%20p%7D%7B%5Cpartial%20y%7D%20-%20%5Clambda_2%20%5Cleft(%20%5Cfrac%7B%5Cpartial%5E2%20v%7D%7B%5Cpartial%20x%5E2%7D%20&plus;%20%5Cfrac%7B%5Cpartial%5E2%20v%7D%7B%5Cpartial%20y%5E2%7D%20%5Cright)%20%3D%200)
 
 #### 连续性方程（不可压缩条件）
 
-$$
-\frac{\partial u}{\partial x} + \frac{\partial v}{\partial y} = 0
-$$
+![公式](https://latex.codecogs.com/svg.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20x%7D%20&plus;%20%5Cfrac%7B%5Cpartial%20v%7D%7B%5Cpartial%20y%7D%20%3D%200)
 
 ### 与有限元仿真数据残差比较
 
-$$
-\mathcal{L}_{\text{data}} = \sum_{i} \left( (u_i - \hat{u}_i)^2 + (v_i - \hat{v}_i)^2 \right)
-$$
+![公式](https://latex.codecogs.com/svg.latex?%5Cmathcal%7BL%7D_%7B%5Ctext%7Bdata%7D%7D%20%3D%20%5Csum_%7Bi%7D%20%5Cleft(%20(u_i%20-%20%5Chat%7Bu%7D_i)%5E2%20&plus;%20(v_i%20-%20%5Chat%7Bv%7D_i)%5E2%20%5Cright))
 
 ### 物理约束的边界条件
 
 - **物理方程的边界约束**：
   
-  $$
-  \mathcal{L}_{\text{pde}} = \sum_{i} \left( f_{u,i}^2 + f_{v,i}^2 \right)
-  $$
+  ![公式](https://latex.codecogs.com/svg.latex?%5Cmathcal%7BL%7D_%7B%5Ctext%7Bpde%7D%7D%20%3D%20%5Csum_%7Bi%7D%20%5Cleft(%20f_%7Bu,i%7D%5E2%20&plus;%20f_%7Bv,i%7D%5E2%20%5Cright))
   
   其中
   
-  $$
-  f_u = \frac{\partial u}{\partial t} + \lambda_1 \left( u \frac{\partial u}{\partial x} + v \frac{\partial u}{\partial y} \right) + \frac{\partial p}{\partial x} - \lambda_2 \left( \frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} \right)
-  $$
+  ![公式](https://latex.codecogs.com/svg.latex?f_u%20%3D%20%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20&plus;%20%5Clambda_1%20%5Cleft(%20u%20%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20x%7D%20&plus;%20v%20%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20y%7D%20%5Cright)%20&plus;%20%5Cfrac%7B%5Cpartial%20p%7D%7B%5Cpartial%20x%7D%20-%20%5Clambda_2%20%5Cleft(%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D%20&plus;%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20y%5E2%7D%20%5Cright))
   
-  $$
-  f_v = \frac{\partial v}{\partial t} + \lambda_1 \left( u \frac{\partial v}{\partial x} + v \frac{\partial v}{\partial y} \right) + \frac{\partial p}{\partial y} - \lambda_2 \left( \frac{\partial^2 v}{\partial x^2} + \frac{\partial^2 v}{\partial y^2} \right)
-  $$
+  ![公式](https://latex.codecogs.com/svg.latex?f_v%20%3D%20%5Cfrac%7B%5Cpartial%20v%7D%7B%5Cpartial%20t%7D%20&plus;%20%5Clambda_1%20%5Cleft(%20u%20%5Cfrac%7B%5Cpartial%20v%7D%7B%5Cpartial%20x%7D%20&plus;%20v%20%5Cfrac%7B%5Cpartial%20v%7D%7B%5Cpartial%20y%7D%20%5Cright)%20&plus;%20%5Cfrac%7B%5Cpartial%20p%7D%7B%5Cpartial%20y%7D%20-%20%5Clambda_2%20%5Cleft(%20%5Cfrac%7B%5Cpartial%5E2%20v%7D%7B%5Cpartial%20x%5E2%7D%20&plus;%20%5Cfrac%7B%5Cpartial%5E2%20v%7D%7B%5Cpartial%20y%5E2%7D%20%5Cright))
 
 ## 总的损失函数
 
 代码中的总损失函数是数据损失和物理方程残差损失的组合：
 
-$$
-\mathcal{L} = \mathcal{L}_{\text{data}} + \mathcal{L}_{\text{pde}}
-$$
+![公式](https://latex.codecogs.com/svg.latex?%5Cmathcal%7BL%7D%20%3D%20%5Cmathcal%7BL%7D_%7B%5Ctext%7Bdata%7D%7D%20&plus;%20%5Cmathcal%7BL%7D_%7B%5Ctext%7Bpde%7D%7D)
