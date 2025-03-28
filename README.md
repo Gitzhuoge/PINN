@@ -34,7 +34,7 @@
   
   ![公式](https://latex.codecogs.com/svg.latex?f_v%20%3D%20%5Cfrac%7B%5Cpartial%20v%7D%7B%5Cpartial%20t%7D%20&plus;%20%5Clambda_1%20%5Cleft(%20u%20%5Cfrac%7B%5Cpartial%20v%7D%7B%5Cpartial%20x%7D%20&plus;%20v%20%5Cfrac%7B%5Cpartial%20v%7D%7B%5Cpartial%20y%7D%20%5Cright)%20&plus;%20%5Cfrac%7B%5Cpartial%20p%7D%7B%5Cpartial%20y%7D%20-%20%5Clambda_2%20%5Cleft(%20%5Cfrac%7B%5Cpartial%5E2%20v%7D%7B%5Cpartial%20x%5E2%7D%20&plus;%20%5Cfrac%7B%5Cpartial%5E2%20v%7D%7B%5Cpartial%20y%5E2%7D%20%5Cright))
 
-## 总的损失函数
+### 总的损失函数
 
 代码中的总损失函数是数据损失和物理方程残差损失的组合：
 
