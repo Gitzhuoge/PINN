@@ -36,22 +36,25 @@ p = PP.flatten()[:,None] # NT x 1
 
 
 #最终的总数据
-data_total = np.concatenate([x,y,t,u,v,p],1)
-
+data1 = np.concatenate([x,y,t,u,v,p],1)
+data2 = data1[:, :][data1[:, 2] <= 7]
+data3 = data2[:, :][data2[:, 0] >= 1]
+data4 = data3[:, :][data3[:, 0] <= 8]
+data5 = data4[:, :][data4[:, 1] >= -2]
+data_total = data5[:, :][data5[:, 1] <= 2]
 
 #从里面随机抽取2000个数,idx是索引
 idx = np.random.choice(data_total.shape[0], 2000, replace=False)
-data = data_total[idx,:]
-
 
 #分割训练集和测试集
+data = data_total[idx,:]
 train_data, test_data = train_test_split(data, test_size=0.2, random_state=369)
 
 train_input, train_output = train_data[:,:3], train_data[:, 3:]
 test_input, test_output = test_data[:,:3], test_data[:, 3:]
 
-
 # 定义PDE函数，PDE要调用NN中的lambda参数
+
 lambda_1 = dde.Variable(0.0)
 lambda_2 = dde.Variable(0.0)
 
@@ -92,16 +95,16 @@ def loss_PDE(inputs, outputs):
 
 
 #定义离散点损失
-bc_u = dde.PointSetBC(train_input, train_output[:,0], component=0)
-bc_v = dde.PointSetBC(train_input, train_output[:,1], component=1)
-bc_p = dde.PointSetBC(train_input, train_output[:,2], component=2)
 
-#定义空间域
-geom = dde.geometry.Rectangle([np.min(x), np.min(y)], [np.max(x), np.max(y)])
+bc_u = dde.icbc.PointSetBC(train_input, train_output[:,0:1], component=0)
+bc_v = dde.icbc.PointSetBC(train_input, train_output[:,1:2], component=1)
+bc_p = dde.icbc.PointSetBC(train_input, train_output[:,2:3], component=2)
 
+# 定义空间域
+geom = dde.geometry.Rectangle([1.0,-2.0], [8.0,2.0])
 
 #定义时间域
-time = dde.geometry.TimeDomain(np.min(t), np.max(t))
+time = dde.geometry.TimeDomain(0, 7)
 
 #时空域
 geomtime = dde.geometry.GeometryXTime(geom, time)
@@ -109,7 +112,7 @@ geomtime = dde.geometry.GeometryXTime(geom, time)
 
 
 #组建模型
-layers = [3]+[20]*6+[3]
+layers = [3]+[50]*6+[3]
 
 NN_net = dde.nn.FNN(layers, "tanh", "Glorot normal")
 
@@ -135,61 +138,45 @@ model.compile("adam", lr = 0.001, external_trainable_variables=[lambda_1, lambda
 
 losshistory, train_state = model.train(iterations=500,callbacks=[variable], display_every=10,disregard_previous_best=True)
 
-train_pred = model.predict(train_input)
+# 使用测试集输入数据获取模型的预测值
+test_pred = model.predict(test_input)
 
-# 分别取出预测值和真实值
-u_pred, v_pred, p_pred = train_pred[:, 0], train_pred[:, 1], train_pred[:, 2]
-u_true, v_true, p_true = train_output[:, 0], train_output[:, 1], train_output[:, 2]
+# 提取预测值和真实值
+u_pred = test_pred[:, 0]
+v_pred = test_pred[:, 1]
+p_pred = test_pred[:, 2]
+
+u_true = test_output[:, 0]
+v_true = test_output[:, 1]
+p_true = test_output[:, 2]
+
+# 绘制预测值与真实值的相关曲线
+plt.figure(figsize=(12, 4))
+
+# 绘制u分量的预测值与真实值
+plt.subplot(1, 3, 1)
+plt.scatter(u_true, u_pred, alpha=0.5)
+plt.plot([u_true.min(), u_true.max()], [u_true.min(), u_true.max()], 'r--')
+plt.xlabel('True u')
+plt.ylabel('Predicted u')
+plt.title('u Prediction vs True')
 
 
-#画图
-def plot_comparison_at_time(t_selected):
-    """在特定时间 t_selected 处绘制 u, v, p 的真实值、预测值和误差"""
-    mask = np.isclose(train_input[:, 2], t_selected)  # 找到 t 接近 t_selected 的点
-    x_selected = train_input[mask, 0]
-    y_selected = train_input[mask, 1]
+# 绘制v分量的预测值与真实值
+plt.subplot(1, 3, 2)
+plt.scatter(v_true, v_pred, alpha=0.5)
+plt.plot([v_true.min(), v_true.max()], [v_true.min(), v_true.max()], 'r--')
+plt.xlabel('True v')
+plt.ylabel('Predicted v')
+plt.title('v Prediction vs True')
 
-    u_pred_selected = u_pred[mask]
-    u_true_selected = u_true[mask]
+# 绘制压力p的预测值与真实值
+plt.subplot(1, 3, 3)
+plt.scatter(p_true, p_pred, alpha=0.5)
+plt.plot([p_true.min(), p_true.max()], [p_true.min(), p_true.max()], 'r--')
+plt.xlabel('True p')
+plt.ylabel('Predicted p')
+plt.title('p Prediction vs True')
 
-    v_pred_selected = v_pred[mask]
-    v_true_selected = v_true[mask]
-
-    p_pred_selected = p_pred[mask]
-    p_true_selected = p_true[mask]
-
-    # 计算误差
-    u_error = np.abs(u_pred_selected - u_true_selected)
-    v_error = np.abs(v_pred_selected - v_true_selected)
-    p_error = np.abs(p_pred_selected - p_true_selected)
-
-    fig, axes = plt.subplots(3, 3, figsize=(15, 9))
-
-    def plot_subplot(ax, x, y, values, title):
-        sc = ax.scatter(x, y, c=values, cmap="jet", alpha=0.7)
-        plt.colorbar(sc, ax=ax)
-        ax.set_xlabel("x")
-        ax.set_ylabel("y")
-        ax.set_title(title)
-
-    # u 真实值 vs 预测值 vs 误差
-    plot_subplot(axes[0, 0], x_selected, y_selected, u_true_selected, f"True u at t={t_selected}")
-    plot_subplot(axes[0, 1], x_selected, y_selected, u_pred_selected, f"Predicted u at t={t_selected}")
-    plot_subplot(axes[0, 2], x_selected, y_selected, u_error, f"Error |u_pred - u_true|")
-
-    # v 真实值 vs 预测值 vs 误差
-    plot_subplot(axes[1, 0], x_selected, y_selected, v_true_selected, f"True v at t={t_selected}")
-    plot_subplot(axes[1, 1], x_selected, y_selected, v_pred_selected, f"Predicted v at t={t_selected}")
-    plot_subplot(axes[1, 2], x_selected, y_selected, v_error, f"Error |v_pred - v_true|")
-
-    # p 真实值 vs 预测值 vs 误差
-    plot_subplot(axes[2, 0], x_selected, y_selected, p_true_selected, f"True p at t={t_selected}")
-    plot_subplot(axes[2, 1], x_selected, y_selected, p_pred_selected, f"Predicted p at t={t_selected}")
-    plot_subplot(axes[2, 2], x_selected, y_selected, p_error, f"Error |p_pred - p_true|")
-
-    plt.tight_layout()
-    plt.show()
-
-# 选择几个时间步
-for t_plot in [0.0, 1.0, 2.0]:
-    plot_comparison_at_time(t_plot)
+plt.tight_layout()
+plt.show()
