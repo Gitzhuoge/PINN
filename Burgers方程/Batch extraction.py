@@ -57,5 +57,35 @@ for i in range(10):
     X_combined = np.vstack([X_uniform, X_highres])
     data_PINN.replace_with_anchors(X_combined)
 
+    
+
     # 继续训练模型（不重新 compile）
     model.train(iterations=1000, display_every=100)
+
+
+#取点画图，输出正确率
+data = np.load("Burgers.npz")
+t, x, exact = data["t"], data["x"], data["usol"].T
+xx, tt = np.meshgrid(x,t)
+X = np.vstack((np.ravel(xx), np.ravel(tt))).T
+y = exact.flatten()[:, None]
+y_pred = model.predict(X)
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(6, 6))
+plt.scatter(y, y_pred, s=1, alpha=0.5, label="Prediction")
+plt.plot([y.min(), y.max()], [y.min(), y.max()], "r--", label="Ideal: y=x")
+plt.xlabel("True u(x, t)")
+plt.ylabel("Predicted u(x, t)")
+plt.title("Predicted vs True Values")
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+
+from sklearn.metrics import r2_score
+
+r2 = r2_score(y, y_pred)
+print(f"R² score: {r2:.4f}")
