@@ -71,7 +71,7 @@
 
 ![总损失](https://latex.codecogs.com/svg.latex?%5Cmathcal%7BL%7D%20%3D%20%5Cmathcal%7BL%7D_%7Bpde%7D%20&plus;%202%5Cmathcal%7BL%7D_%7Bbc%7D)
 
-## Burger方程  
+## Burgers方程  
 ![Burger方程](https://latex.codecogs.com/svg.latex?\frac{\partial%20y}{\partial%20t}%20+%20y%20\frac{\partial%20y}{\partial%20x}%20=%20\frac{0.01}{\pi}%20\frac{\partial^2%20y}{\partial%20x^2})
 
 求解带粘性项的 Burgers 方程，其中粘性系数为：
