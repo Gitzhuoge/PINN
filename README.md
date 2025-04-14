@@ -1,4 +1,4 @@
-# 涉及的偏微分方程
+# 内容概览
 
 ## 1、纳斯-斯托克斯方程
 
@@ -90,4 +90,54 @@
 这样函数本身满足边界和初始条件，只需要训练这整个函数（当然主要是训练 y(x,t)）使得其满足 burger 方程，最终整个方程即为满足需求的方程解。
 
 **另外求解过程中，可以先在全局定义域里训练模型，再抽取定义域里模型预测精度比较低的点，再混合部分全局抽取的随机点，放入模型中训练，即对残差比较大区域自适应地加密训练**
+
+## 4、碟片激光晶体受热分析
+
+主要涉及热位移和温度分布
+
+### 热传导方程
+
+热传导过程可由以下偏微分方程描述：
+
+![热传导方程](https://latex.codecogs.com/svg.latex?\nabla^2%20T^*%20+%20\frac{Q%20L^2}{\lambda%20T_c}%20=%20\frac{\rho%20c_p}{\lambda}%20L^2%20\frac{\partial%20T^*}{\partial%20t})
+
+其中：
+
+- $\nabla^2$ 为拉普拉斯算子  
+- $\rho$ 是密度  
+- $c_p$ 是比热容  
+- $\lambda$ 是热导率  
+- $Q$ 是单位体积的热源强度  
+- $L$ 是特征长度  
+- $T_c$ 是参考温度
+
+
+
+### 热应力方程
+
+**x 方向的热位移方程：**
+
+![x方向位移](https://latex.codecogs.com/svg.latex?\nabla^2%20u^*%20+%20\frac{1+\mu}{1-\mu}\left(%20\frac{\partial%20l}{\partial%20x^*}%20\right)%20-%20\frac{2(1+\mu)}{1-\mu}%20\alpha%20\frac{T_c%20L}{u_c}%20\frac{\partial%20T^*}{\partial%20x^*}%20=%200)
+
+**y 方向的热位移方程：**
+
+![y方向位移](https://latex.codecogs.com/svg.latex?\nabla^2%20v^*%20+%20\frac{1+\mu}{1-\mu}\left(%20\frac{\partial%20l}{\partial%20y^*}%20\right)%20-%20\frac{2(1+\mu)}{1-\mu}%20\alpha%20\frac{T_c%20L}{u_c}%20\frac{\partial%20T^*}{\partial%20y^*}%20=%200)
+
+体积应变定义为：
+
+![体积应变定义](https://latex.codecogs.com/svg.latex?l%20=%20\frac{\partial%20u^*}{\partial%20x^*}%20+%20\frac{\partial%20v^*}{\partial%20y^*})
+
+变量说明：
+
+- u, v：在 $x$ 和 $y$ 方向的位移  
+- $\mu$：泊松比  
+- $\alpha$：线膨胀系数  
+- $u_c$：特征位移
+
+另外，u，v和T在几何边界的值分别是0,0,22
+
+### 损失函数结构
+
+总损失函数由PDE损失和几何边界损失构成
+
 
