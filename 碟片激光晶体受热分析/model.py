@@ -106,7 +106,7 @@ plt.plot(losshistory.steps, losshistory.loss_test, label="Total Test Loss", colo
 colors = ["red", "green", "purple"]  # 为每个方程分配颜色
 labels = ["Heat Loss", "u Displacement Loss", "v Displacement Loss"]  # 每个损失的名称
 
-for i in range(3):  # 假设 PDE 返回了三个损失值
+for i in range(3):  # PDE 返回了三个损失值
     plt.plot(losshistory.steps, [loss[i] for loss in losshistory.loss_train], label=f"Train {labels[i]}", color=colors[i], linestyle="-")
     plt.plot(losshistory.steps, [loss[i] for loss in losshistory.loss_test], label=f"Test {labels[i]}", color=colors[i], linestyle="--")
 
